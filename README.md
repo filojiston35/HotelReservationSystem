@@ -12,6 +12,8 @@ gelir ve giderlerini takip edebilmesi için grafikle hazırlanmış bir istatist
 olacaktır.Sistem (EN,TR) dil desteğine sahip olacaktır.
 
 Geliştirme Ortamı/Araçları
+
 Netbeans/MySQL/Hibernate/JSF/Primefaces/OmniFaces
+
 HTML/CSS/BootStrap/Javascript/jQuery
 
