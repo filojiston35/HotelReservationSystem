@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.Personnel" table="personnel" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="personnelId" type="java.lang.Integer">
+            <column name="personnel_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="departments" class="com.hotelrezervation.model.Departments" lazy="false" fetch="select">
+            <column name="personnel_department" not-null="true" />
+        </many-to-one>
+        <property name="personnelName" type="string">
+            <column name="personnel_name" length="45" not-null="true" />
+        </property>
+        <property name="personnelSurname" type="string">
+            <column name="personnel_surname" length="45" not-null="true" />
+        </property>
+        <property name="personnelAge" type="java.lang.Integer">
+            <column name="personnel_age" />
+        </property>
+        <property name="personnelTc" type="string">
+            <column name="personnel_tc" length="20" />
+        </property>
+        <property name="personnelAdmin" type="boolean">
+            <column name="personnel_admin" not-null="true" />
+        </property>
+        <property name="personnelMail" type="string">
+            <column name="personnel_mail" length="60" not-null="true" />
+        </property>
+        <property name="personnelPassword" type="string">
+            <column name="personnel_password" length="60" />
+        </property>
+        <property name="personnelPhone" type="string">
+            <column name="personnel_phone" length="45" />
+        </property>
+        <property name="personnelImage" type="string">
+            <column name="personnel_image" length="100" />
+        </property>
+        <property name="personnelReservationAuthority" type="java.lang.Boolean">
+            <column name="personnel_reservation_authority" />
+        </property>
+        <property name="personnelAdditionAuthority" type="java.lang.Boolean">
+            <column name="personnel_addition_authority" />
+        </property>
+        <property name="personnelManagmentAuhority" type="java.lang.Boolean">
+            <column name="personnel_managment_auhority" />
+        </property>
+        <set name="eventPersonnelsForEventSenderId" table="event_personnel" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="event_sender_id" not-null="true" />
+            </key>
+            <one-to-many class="com.hotelrezervation.model.EventPersonnel" />
+        </set>
+        <set name="eventPersonnelsForPersonnelId" table="event_personnel" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="personnel_id" not-null="true" />
+            </key>
+            <one-to-many class="com.hotelrezervation.model.EventPersonnel" />
+        </set>
+    </class>
+</hibernate-mapping>

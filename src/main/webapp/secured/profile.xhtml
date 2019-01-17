@@ -1,0 +1,144 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions">
+    <link rel="stylesheet" href="../resources/css/profile.css"/>
+    <link rel="stylesheet" href="../resources/css/imageUpload.css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+                    <p:outputPanel id="outputPanel">    
+                        <div class="box">
+                            <h3>#{msg.personnelprofile}</h3>
+                            <h:form>
+
+                                <table  id="personnel-detail-table">
+                                    <tr style="border-bottom: 1px solid #ccc;">
+                                        <td rowspan="6" style="background-color:#ccc;" class="image-column">
+                                            <p:graphicImage class="personnel-image" value="../resources/upload/#{profile.loginControl.personnel.personnelImage}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText value="#{msg.personnelnamesurname}"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <h:outputText value="#{profile.loginControl.personnel.personnelName} #{loginControl.personnel.personnelSurname}"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #ccc;">
+                                        <td>
+                                            <h:outputText value="#{msg.personnelage}"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <h:outputText value="#{profile.loginControl.personnel.personnelAge}"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #ccc;">
+                                        <td>
+                                            <h:outputText value="#{msg.personneldepartment}"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <h:outputText value="#{profile.loginControl.personnel.departments.departmentsName}"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #ccc;">
+                                        <td>
+                                            <h:outputText value="#{msg.personnelmail}"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <h:outputText value="#{profile.loginControl.personnel.personnelMail}"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #ccc;">
+                                        <td>
+                                            <h:outputText value="#{msg.personnelphone}"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <h:outputText value="#{profile.loginControl.personnel.personnelPhone}"/>
+                                        </td>
+                                    </tr>
+                                    <tr style="border-bottom: 1px solid #ccc;">
+                                        <td>
+                                            <h:outputText value="#{msg.personneltc}"/>
+                                        </td>
+                                        <td style="text-align: right;">
+                                            <h:outputText value="#{profile.loginControl.personnel.personnelTc}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                                <div style="padding-top:10px;text-align:center;">
+                                    <p:commandLink class="btn btn-primary personnel-insert-dialog-commandButton" update=":personnelUpdateForm:personelUpdateContainer" actionListener="#{personnelOperations.selectedPersonelEmpty()}" oncomplete="PF('personnelInsertAndUpdate').show()">
+                                        <i class="fas fa-pencil-alt"></i><i style="padding:10px;">#{msg.personnelupdatebutton}</i>
+                                    </p:commandLink>
+                                </div>
+                                <p:messages autoUpdate="true" style="font-size:13px;" closable="true"/>
+                            </h:form>
+                        </div>
+                        <!--PERSONEL INSERT UPDATE DIALOG-->
+                        <h:form id="personnelUpdateForm" enctype="multipart/form-data">
+                            <p:dialog header="#{msg.personnelupdateform}" widgetVar="personnelInsertAndUpdate" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                                <p:outputPanel id="personelUpdateContainer">
+                                    <div style="text-align: center;">
+                                        <h:graphicImage rendered="#{profile.loginControl.personnel.personnelImage eq null}" class="imgpreview" value="../resources/images/user-regular.svg" />
+                                        <h:graphicImage rendered="#{profile.loginControl.personnel.personnelImage ne null}" class="imgpreview" value="../resources/upload/#{profile.loginControl.personnel.personnelImage}" />
+                                        <div id="upload-button">
+                                            <h:inputFile id="imageupload" onchange="imagepreview(this);" value="#{profile.image}"/>
+                                        </div>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputText placeholder="#{msg.personnelupdatename}" validatorMessage="#{msg.personnelupdatenamevalidator}" value="#{profile.loginControl.personnel.personnelName}" requiredMessage="#{msg.personnelupdatenamerequired}" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ']+$" message="#{msg.personnelupdatename} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.personnelupdatename} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputText placeholder="#{msg.personnelupdatesurname}" validatorMessage="#{msg.personnelupdatesurnamevalidator}" value="#{profile.loginControl.personnel.personnelSurname}" requiredMessage="#{msg.personnelupdatesurnamerequired}" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ']+$" message="#{msg.personnelupdatesurname} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.personnelupdatesurname} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputMask mask="99" placeholder="#{msg.personnelupdateage}" value="#{profile.loginControl.personnel.personnelAge}"/>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputMask mask="99999999999" placeholder="#{msg.personnelupdatephone}" value="#{profile.loginControl.personnel.personnelTc}"/>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-envelope"></i>
+                                        <p:inputText id="personnel_mail" placeholder="#{msg.personnelupdatemail}" value="#{profile.loginControl.personnel.personnelMail}" validatorMessage="#{msg.personnelupdatemailvalidator}" required="true" requiredMessage="#{msg.personnelupdatemailrequired}"> 
+                                            <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fas fa-phone"></i>
+                                        <p:inputMask placeholder="#{msg.personnelupdatephone}" value="#{profile.loginControl.personnel.personnelPhone}" mask="+99 (999) 999-9999"/>
+                                    </div>
+                                    <div>
+                                        <p:commandButton ajax="false" class="personnel-insert-dialog-commandButton" value="#{msg.personnelupdatebutton}"  action="#{profile.updatexPersonnel()}" onclick="PF('personnelInsertAndUpdate').hide()" update="usernameAndPasswordForm"/> 
+                                    </div>
+                                </p:outputPanel>
+
+                            </p:dialog>
+                        </h:form>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+    <script src="../resources/scripts/image-upload.js"></script>
+</ui:composition>

@@ -1,0 +1,161 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions">
+    <link rel="stylesheet" href="../resources/css/department-operations.css"/>
+    <link rel="stylesheet" href="../resources/css/imageUpload.css"/>
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+                    <p:outputPanel id="outputPanel">
+                        <form>
+                            <p:messages autoUpdate="true" closable="true" showIcon="false" style="font-size:13px;" />
+                        </form>
+                        <table id="departmentTable" width="100%">
+                            <tr>
+                                <td valign="top" style="width:40%">
+                                    <h:form  id="departmentForm" style="padding-right:10px;">
+                                        <p:scrollPanel id="departmentDataTableScroll" mode="native">
+                                            <p:dataTable id="departmentList" var="department" value="#{departmentOperations.departments}" emptyMessage="#{msg.emptyMessage}">
+                                                <f:facet name="header">
+                                                    #{msg.departmentDetailTable}
+                                                </f:facet>
+                                                <p:columnGroup type="header">
+                                                    <p:row style="text-align: center;">
+                                                        <p:column style="width:30%;" colspan="1" headerText="#{msg.departmentName}"/>
+                                                        <p:column style="width:50%;" colspan="3" headerText="#{msg.depatmentOperations}"/>
+                                                    </p:row>
+                                                </p:columnGroup>
+                                                <p:column>
+                                                    <h:outputText value="#{department.departmentsName.toUpperCase()}" />
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink style="text-align: center;" actionListener="#{departmentOperations.viewPersonnelInDepartment(department)}" update=":personnelInDepartment:personnelList" onclick="personnelInDepartmentShow()" oncomplete="dataTableAutoScroll2();">
+                                                        <i class="fas fa-address-card fa-1x personnel-operations-icon"></i>
+                                                    </p:commandLink>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink style="text-align: center;" class="commandlink" actionListener="#{departmentOperations.setSelectedDepartmentWithUpdate(department)}" onclick="personnelInDepartmentHide()" update=":departmentInsertForm:departmentInsertContainer" oncomplete="PF('departmentInsertAndUpdate').show()" >
+                                                        <i class="fas fa-pencil-alt fa-1x personnel-operations-icon"></i>
+                                                    </p:commandLink>
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink style="text-align: center;" class="commandlink" actionListener="#{departmentOperations.deleteDepartments(department)}" update="departmentForm:departmentList" oncomplete="dataTableAutoScroll();">
+                                                        <p:confirm header="#{msg.personnelOperationsConfirmation}" message="#{msg.personnelOperationsConfirmationMessage}" icon="ui-icon-alert" />
+                                                        <i class="fas fa-trash-alt fa-1x personnel-operations-icon"></i>
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:scrollPanel>
+                                        <div style="padding-top:10px;">
+                                            <p:commandLink class="btn btn-primary" actionListener="#{departmentOperations.selectedDepartmentEmpty()}" update=":departmentInsertForm:departmentInsertContainer" onclick="personnelInDepartmentHide()" oncomplete="PF('departmentInsertAndUpdate').show()">
+                                                <i class="fas fa-plus-square"></i><i style="padding:10px;">#{msg.departmentAddNewDepartment}</i>
+                                            </p:commandLink>
+                                        </div>
+                                    </h:form>
+                                </td>
+                                <td style="width:40%" valign="top">
+                                    <!--Personnel list in department  -->
+                                    <h:form id="personnelInDepartment" style="padding-left:10px;padding-right:10px;opacity:0;">
+                                        <p:scrollPanel id="personnelDataTableScroll" mode="native">
+                                            <p:dataTable id="personnelList" var="person" value="#{departmentOperations.selectedPersonnel}" emptyMessage="#{msg.emptyMessage}">
+                                                <f:facet name="header">
+                                                    " #{departmentOperations.selectedDepartments.departmentsName.toUpperCase()} " #{msg.DetailTable}
+                                                </f:facet>
+                                                <p:columnGroup type="header">
+                                                    <p:row style="text-align: center;">
+                                                        <p:column style="width:5%;" colspan="1" />
+                                                        <p:column style="width:12%;" colspan="1" headerText="#{msg.personnelOperationsName}"/>
+                                                        <p:column style="width:12%;" colspan="1" headerText="#{msg.personnelOperationsSurname}"/>
+                                                        <p:column style="width:12%;" colspan="1" headerText="#{msg.personnelOperationsPersonnelInfo}"/>
+                                                    </p:row>
+                                                </p:columnGroup>
+                                                <p:column>
+                                                    <h:graphicImage rendered="#{person.personnelImage eq null}" class="datatable-personnel-image" value="../resources/images/user-regular.svg" />
+                                                    <h:graphicImage rendered="#{person.personnelImage ne null}" class="datatable-personnel-image" value="../resources/upload/#{person.personnelImage}" />
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{person.personnelName.toUpperCase()}" />
+                                                </p:column>
+                                                <p:column>
+                                                    <h:outputText value="#{person.personnelSurname.toUpperCase()}" />
+                                                </p:column>
+                                                <p:column>
+                                                    <p:commandLink style="text-align: center;" update="personnelDetail" oncomplete="PF('personnelDialog').show()">
+                                                        <i class="fas fa-address-card fa-1x personnel-operations-icon"></i>
+                                                        <f:setPropertyActionListener value="#{person}" target="#{departmentOperations.person}" />
+                                                    </p:commandLink>
+                                                </p:column>
+                                            </p:dataTable>
+                                        </p:scrollPanel>
+                                    </h:form>
+                                </td>
+                            </tr>
+                        </table>
+                        <!--Department Update-Insert Form -->
+                        <h:form id="departmentInsertForm">
+                            <p:dialog header="#{msg.departmentInsertUpdeteForm}" widgetVar="departmentInsertAndUpdate" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                                <p:outputPanel id="departmentInsertContainer">
+                                    <div data-balloon="&#9787; #{msg.maxCharacter25} &#10;&#9787; #{msg.specialCharacter}" data-balloon-break="data-balloon-break" data-balloon-pos="down" class="personnel-insert-dialog">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p:inputText placeholder="#{msg.departmentName}" maxlength="25" value="#{departmentOperations.updateName}" requiredMessage="#{msg.departmentNameRequiredMessage}" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z0-9,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ']+$" message="#{msg.departmentName} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.departmentName} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div>
+                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="departmentForm:departmentList" rendered="#{departmentOperations.updateId eq null}" value="#{msg.departmentAddNewDepartment}" actionListener="#{departmentOperations.insertDepartments()}" onclick="PF('departmentInsertAndUpdate').hide()" oncomplete="dataTableAutoScroll();"/>
+                                    </div>
+                                    <div>
+                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="departmentForm:departmentList" rendered="#{departmentOperations.updateId ne null}" value="#{msg.departmentUpdateDepartment}"  actionListener="#{departmentOperations.updateDepartments()}" onclick="PF('departmentInsertAndUpdate').hide()"/> 
+                                    </div>
+                                </p:outputPanel>
+                            </p:dialog>
+                        </h:form>
+                        <!--PERSONEL DETAIL DIALOG-->
+                        <p:dialog header="#{msg.personnelOperationsPersonnelInfo}" widgetVar="personnelDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                            <p:outputPanel id="personnelDetail" style="text-align:left;font-family:sans-serif;font-size:14px;">
+                                <p:panelGrid styleClass="personnelDetailPanel"  columns="2" rendered="#{not empty departmentOperations.person}" columnClasses="label,value">
+                                    <f:facet name="header">
+                                        <h:graphicImage rendered="#{departmentOperations.person.personnelImage eq null}" class="imgpreview" value="../resources/images/user-regular.svg" />
+                                        <h:graphicImage rendered="#{departmentOperations.person.personnelImage ne null}" class="imgpreview" value="../resources/upload/#{departmentOperations.person.personnelImage}" />
+
+                                    </f:facet>
+
+                                    <h:outputText rendered="#{departmentOperations.person.personnelName!=null}" value="#{msg.personnelupdatename}" />
+                                    <h:outputText rendered="#{departmentOperations.person.personnelName!=null}" value="#{departmentOperations.person.personnelName}" />
+
+                                    <h:outputText rendered="#{departmentOperations.person.personnelSurname!=null}" value="#{msg.personnelupdatesurname}" />
+                                    <h:outputText rendered="#{departmentOperations.person.personnelSurname!=null}" value="#{departmentOperations.person.personnelSurname}" />
+
+                                    <h:outputText rendered="#{departmentOperations.person.departments!=null}" value="#{msg.personnelupdateselectdepartment}" />
+                                    <h:outputText rendered="#{departmentOperations.person.departments!=null}" value="#{departmentOperations.person.departments.departmentsName}" />
+
+                                    <h:outputText rendered="#{departmentOperations.person.personnelMail!=null}" value="#{msg.personnelupdatemail}" />
+                                    <h:outputText rendered="#{departmentOperations.person.personnelMail!=null}" value="#{departmentOperations.person.personnelMail}" />
+
+                                    <h:outputText rendered="#{departmentOperations.person.personnelTc!=null}" value="#{msg.personneltc}" />
+                                    <h:outputText rendered="#{departmentOperations.person.personnelTc!=null}" value="#{departmentOperations.person.personnelTc}" />
+
+                                    <h:outputText rendered="#{departmentOperations.person.personnelPhone!=null}" value="#{msg.personnelupdatephone}" />
+                                    <h:outputText rendered="#{departmentOperations.person.personnelPhone!=null}" value="#{departmentOperations.person.personnelPhone}" />
+
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+    <script src="../resources/scripts/department-operations.js"></script>
+</ui:composition>

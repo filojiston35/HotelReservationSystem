@@ -1,0 +1,58 @@
+.productListTable{
+    width:600px !important;
+    font-size:14px !important;
+    border-bottom:1px solid #ddd;
+}
+.productListTable table > thead > tr > th{
+    border:none !important;
+}
+.productListTable table > tbody,
+.productListTable table > tbody > tr,
+.productListTable table > tbody > tr > td {
+    border-bottom: 1px solid #ffb73d;
+    border-left:none !important;
+    border-right: none !important;
+    border-top:none !important;
+}
+
+.ui-selectonemenu.form-control {
+    color: #555 !important;
+    display: block !important;
+    margin-bottom: 0 !important;
+    padding-right:30px !important;
+    background-color: #fff !important;
+    border: 1px solid #ccc !important;
+    font-size:14px !important;
+    text-align:center;
+}
+
+.radius-none {
+    border-radius: 0 !important;
+}
+
+.ui-selectonemenu.form-control .ui-selectonemenu-trigger {
+    top: 0;
+    right: 0;
+    width: 30px;
+    height: 100%;
+    padding:5px 5px;
+    cursor: pointer;
+    position: absolute;
+    margin: 0 !important;
+    border: none !important;
+    margin-top: 5px !important;
+    background: transparent !important;
+    font-size:14px !important;
+}
+.ui-inputfield.ui-inputtext.ui-widget.ui-state-default.ui-corner-all{
+    width:60px !important;
+    text-align:center;
+    font-size:14px;
+    height:40px;
+
+}
+.ui-fieldset-legend{
+    height:35px;
+    font-size:14px;
+    font-weight:bold !important;
+}

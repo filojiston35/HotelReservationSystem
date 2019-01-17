@@ -1,0 +1,45 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <link rel="stylesheet" href="../resources/css/statistics-operations.css"/>
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+                    <p:outputPanel id="outputPanel">
+                        <h:form>
+                            <p:messages autoUpdate="true" closable="true" showIcon="false" style="font-size:13px;" />
+                        </h:form>
+                        <h:form>
+                            <h:selectOneMenu style="padding:7px;" id="console" value="#{statisticsOperations.selectedYear}">
+                                <f:selectItems value="#{statisticsOperations.dateList}" var="year" itemLabel="#{year}" itemValue="#{year}" />
+                            </h:selectOneMenu>
+                            <p:commandLink style="margin-left:5px;" class="btn btn-primary" actionListener="#{statisticsOperations.viewSelectedDate()}" update="model1Form:lineModel1,model1Form:barModel1">
+                                <i style="padding:10px;">#{msg.selectDate}</i>
+                            </p:commandLink>
+                            <p:commandLink style="margin-left:10px;" class="btn btn-primary" actionListener="#{statisticsOperations.viewLastFiveYear()}" update="model1Form:lineModel1,model1Form:barModel1">
+                                <i style="padding:10px;">#{msg.viewLast5Years}</i>
+                            </p:commandLink>
+                        </h:form>
+                        <h:form id="model1Form">
+                            <p:chart styleClass="barChartStyleClass" id="barModel1" type="bar" model="#{statisticsOperations.barModel1}" style="display:block;z-index:1;width:80%;" responsive="true" >
+                                <p:ajax event="itemSelect" listener="#{statisticsOperations.itemSelect}"  />
+                            </p:chart>
+                            <p:chart styleClass="barChartStyleClass" id="lineModel1" type="line" model="#{statisticsOperations.lineModel1}" style="display:block;z-index:1;width:80%;" responsive="true" >
+                                <p:ajax event="itemSelect" listener="#{statisticsOperations.lineItemSelect}"  />
+                            </p:chart>
+                        </h:form>
+                        
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+</ui:composition>

@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions">
+    <link rel="stylesheet" href="../resources/css/product-operations.css"/>
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+                    <p:outputPanel id="outputPanel">
+                        <h:form>
+                            <p:messages autoUpdate="true" closable="true" showIcon="false" style="font-size:13px;" />
+                        </h:form>          
+                        <div>
+                            <table id="productOperations">
+                                <tr>
+                                    <!--PRODUCT OPERATIONS -->
+                                    <td valign="top" style="width:40%;">
+                                        <h:form id="productCategoriesForm">
+                                            <p:scrollPanel id="productCategoriesDataTableScroll" mode="native">
+                                                <p:dataTable id="productCategoriesList" var="pc" value="#{productOperations.productCategories}" emptyMessage="#{msg.emptyMessage}">
+                                                    <f:facet name="header">
+                                                        #{msg.productCategoriesTable}
+                                                    </f:facet>
+                                                    <p:columnGroup type="header">
+                                                        <p:row>
+                                                            <p:column colspan="1" headerText="#{msg.productName}"/>
+                                                            <p:column colspan="2" headerText="#{msg.productOperations}"/>
+                                                        </p:row>
+                                                    </p:columnGroup>
+                                                    <p:column>
+                                                        <h:outputText value="#{pc.productCategoryName}"/>
+                                                    </p:column>
+                                                    <p:column style="text-align: center;">
+                                                        <p:commandLink class="commandlink" actionListener="#{productOperations.setSelectedProductsCategory(pc)}" update=":productCategoriesInsertForm:productCategoriesInsertContainer" oncomplete="PF('productCategoriesInsertAndUpdate').show()">
+                                                            <i class="fas fa-pencil-alt fa-1x personnel-operations-icon"></i>
+                                                        </p:commandLink>
+                                                    </p:column>
+                                                    <p:column style="text-align: center;">
+                                                        <p:commandLink class="commandlink" actionListener="#{productOperations.deleteProductsCategory(pc)}" update="productCategoriesForm:productCategoriesList,productsForm" oncomplete="dataTableAutoScroll();">
+                                                            <p:confirm header="#{msg.personnelOperationsConfirmation}" message="#{msg.personnelOperationsConfirmationMessage}" icon="ui-icon-alert" />
+                                                            <i class="fas fa-trash-alt fa-1x personnel-operations-icon"></i>
+                                                        </p:commandLink>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:scrollPanel>
+                                            <div style="padding-top:10px;">
+                                                <p:commandLink class="btn btn-primary" actionListener="#{productOperations.selectedProductCategoriesEmpty()}" update=":productCategoriesInsertForm:productCategoriesInsertContainer" oncomplete="PF('productCategoriesInsertAndUpdate').show()">
+                                                    <i class="fas fa-plus-square"></i><i style="padding:10px;">#{msg.productAddNewCategory}</i>
+                                                </p:commandLink>
+                                            </div>
+                                        </h:form>
+
+                                        <!--PRODUCT CATEGORIES INSERT AND UPDATE-->
+                                        <h:form id="productCategoriesInsertForm">
+                                            <p:dialog header="#{msg.productInsertUpdateForm}" widgetVar="productCategoriesInsertAndUpdate" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                                                <p:outputPanel id="productCategoriesInsertContainer">
+                                                    <div data-balloon="&#9787; #{msg.maxCharacter25} &#10;&#9787; #{msg.specialCharacter}" data-balloon-break="data-balloon-break" data-balloon-pos="down" class="personnel-insert-dialog">
+                                                        <i class="fas fa-angle-right"></i>
+                                                        <p:inputText placeholder="#{msg.productCategoryName}" maxlength="25" value="#{productOperations.selectedProductsCategory.productCategoryName}" requiredMessage="#{msg.productCategoryNameRequiredMessage}" required="true">
+                                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z0-9,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ',(,)]+$" message="#{msg.productCategoryName} #{msg.RegexValidator}"/>
+                                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.productCategoryName} #{msg.maxCharacter25}" />
+                                                        </p:inputText>
+                                                    </div>
+                                                    <div>
+                                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="productCategoriesForm:productCategoriesList,productsForm" rendered="#{productOperations.selectedProductsCategory.productCategoryName eq null}" value="#{msg.productAddNewCategory}" actionListener="#{productOperations.insertProductsCategory()}" onclick="PF('productCategoriesInsertAndUpdate').hide()" oncomplete="dataTableAutoScroll();"/>
+                                                    </div>
+                                                    <div>
+                                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="productCategoriesForm:productCategoriesList,productsForm:productsList" rendered="#{productOperations.selectedProductsCategory.productCategoryName ne null}" value="#{msg.productUpdateCategory}"  actionListener="#{productOperations.updateProductsCategory()}" onclick="PF('productCategoriesInsertAndUpdate').hide()"/> 
+                                                    </div>
+                                                </p:outputPanel>
+                                            </p:dialog>
+                                        </h:form>
+                                    </td>
+
+                                    <td valign="top" style="padding-left:20px;">           
+                                        <!--PRODUCT FORM -->
+                                        <h:form id="productsForm">
+                                            <p:scrollPanel id="productDataTableScroll" mode="native">
+                                                <p:dataTable id="productsList" var="pl" value="#{productOperations.products}">
+                                                    <f:facet name="header">
+                                                        #{msg.productsTable}
+                                                    </f:facet>
+                                                    <p:columnGroup type="header">
+                                                        <p:row>
+                                                            <p:column style="width:150px;" colspan="1" headerText="#{msg.productCategoryName}"/>
+                                                            <p:column style="width:150px;" colspan="1" headerText="#{msg.productName}"/>
+                                                            <p:column style="width:150px;" colspan="1" headerText="#{msg.productPrice}"/>
+                                                            <p:column style="width:150px;" colspan="2" headerText="#{msg.productOperations}"/>
+                                                        </p:row>
+                                                    </p:columnGroup>
+                                                    <p:column>
+                                                        <h:outputText value="#{pl.productCategories.productCategoryName}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="#{pl.productName}"/>
+                                                    </p:column>
+                                                    <p:column>
+                                                        <h:outputText value="#{pl.productPrice} TL"/>
+                                                    </p:column>
+                                                    <p:column style="text-align: center;">
+                                                        <p:commandLink class="commandlink" actionListener="#{productOperations.setSelectedProduct(pl)}" update=":productInsertForm:productInsertContainer" oncomplete="PF('productInsertAndUpdate').show()">
+                                                            <i class="fas fa-pencil-alt fa-1x personnel-operations-icon"></i>
+                                                        </p:commandLink>
+                                                    </p:column>
+                                                    <p:column style="text-align: center;">
+                                                        <p:commandLink class="commandlink" actionListener="#{productOperations.deleteProducts(pl)}" update="productsForm:productsList" oncomplete="dataTableAutoScroll2();">
+                                                            <p:confirm header="#{msg.personnelOperationsConfirmation}" message="#{msg.personnelOperationsConfirmationMessage}" icon="ui-icon-alert" />
+                                                            <i class="fas fa-trash-alt fa-1x personnel-operations-icon"></i>
+                                                        </p:commandLink>
+                                                    </p:column>
+                                                </p:dataTable>
+                                            </p:scrollPanel>
+                                            <div style="padding-top:10px;">
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td>
+                                                            <p:commandLink class="btn btn-primary" actionListener="#{productOperations.selectedProductEmpty()}" update=":productInsertForm:productInsertContainer" oncomplete="PF('productInsertAndUpdate').show()">
+                                                                <i class="fas fa-plus-square"></i><i style="padding:10px;">#{msg.productAddNewProduct}</i>
+                                                            </p:commandLink>
+                                                        </td>
+                                                        <td align="right">
+                                                            <h:selectOneMenu class="product_categories" value="#{productOperations.filterProductCategory.productCategoryId}" >
+                                                                <f:selectItem  itemLabel="#{msg.productFilterCategory}" itemValue=""/>
+                                                                <f:selectItems value="#{productOperations.hashProductCategories}" />
+                                                            </h:selectOneMenu>
+                                                            <p:commandLink style="margin-left:10px;" class="btn btn-primary" update="productsForm:productsList" value="#{msg.productFilter}"  actionListener="#{productOperations.viewProducts()}"  oncomplete="dataTableAutoScroll2();"/>
+                                                            <p:commandLink style="margin-left:5px;" class="btn btn-primary" update="productsForm:productsList" value="X"  action="product-operations.xhtml?faces-redirect=true" oncomplete="dataTableAutoScroll2();" /> 
+                                                        </td>
+                                                    </tr>
+                                                </table>
+
+
+                                            </div>
+                                        </h:form>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <!--PRODUCT UPDATE DIALOG-->
+                        <h:form id="productInsertForm">
+                            <p:dialog header="#{msg.productInsertUpdateForm}" widgetVar="productInsertAndUpdate" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                                <p:outputPanel id="productInsertContainer">
+                                    <div data-balloon="&#9787; #{msg.maxCharacter25} &#10;&#9787; #{msg.specialCharacter}" data-balloon-break="data-balloon-break" data-balloon-pos="down" class="personnel-insert-dialog">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p:inputText placeholder="#{msg.productName}" maxlength="25" value="#{productOperations.selectedProduct.productName}" requiredMessage="(*) İsim girmek zorunludur" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z0-9,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ',(,)]+$" message="#{msg.productName} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.productName} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fas fa-angle-right"></i>
+                                        <h:selectOneMenu style="width: 100%;" class="personnel_departments" value="#{productOperations.selectedProduct.productCategories.productCategoryId}" requiredMessage="#{msg.personnelupdatedepartmentrequired}" required="true">
+                                            <f:selectItem  itemLabel="#{msg.productFilterCategory}" itemValue=""/>
+                                            <f:selectItems value="#{productOperations.hashProductCategories}" />
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p:inputNumber style="width:100%;font-size:15px;" minValue="0" maxValue="10000000.00" value="#{productOperations.selectedProduct.productPrice}" symbol=" TL" symbolPosition="s" 
+                                                       decimalSeparator="," thousandSeparator=".">  
+                                        </p:inputNumber>  
+                                    </div>
+                                    <div>
+                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="productsForm:productsList" rendered="#{productOperations.selectedProduct.productName eq null}" value="#{msg.productAddNewProduct}" actionListener="#{productOperations.insertProducts()}" onclick="PF('productInsertAndUpdate').hide()" oncomplete="dataTableAutoScroll2();"/>
+                                    </div>
+                                    <div>
+                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="productsForm:productsList" rendered="#{productOperations.selectedProduct.productName ne null}" value="#{msg.productUpdateProduct}"  actionListener="#{productOperations.updateProducts()}" onclick="PF('productInsertAndUpdate').hide()"/> 
+                                    </div>
+                                </p:outputPanel>
+                            </p:dialog>
+                        </h:form>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+    <script src="../resources/scripts/product-operations.js" type="text/javascript"></script>
+</ui:composition>

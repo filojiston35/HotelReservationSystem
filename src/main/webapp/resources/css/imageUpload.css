@@ -1,0 +1,26 @@
+#upload-button{
+    width:230px;
+    height:30px;
+    cursor: pointer;
+    margin: auto;
+    margin-bottom: 10px;
+}
+#upload-button input[type='file']{
+    height:30px !important;
+    width:110px;
+    cursor: pointer;
+
+}
+.imgpreview{
+    width:200px;
+    height:200px;
+    margin-bottom:10px;
+    padding: 10px;
+}
+.personnelDetailPanel.ui-panelgrid>*>tr,
+.personnelDetailPanel.ui-panelgrid .ui-panelgrid-cell {
+    background-color:white;
+}
+.myPanel.ui-panelgrid>*>tr{
+    border:none;
+}

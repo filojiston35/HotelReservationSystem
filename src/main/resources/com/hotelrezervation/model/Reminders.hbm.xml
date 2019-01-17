@@ -1,0 +1,30 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.Reminders" table="reminders" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="reminderId" type="java.lang.Integer">
+            <column name="reminder_id" />
+            <generator class="identity" />
+        </id>
+        <property name="reminderTitle" type="string">
+            <column name="reminder_title" length="45" />
+        </property>
+        <property name="reminderMessage" type="string">
+            <column name="reminder_message" length="65535" />
+        </property>
+        <property name="reminderStartDate" type="timestamp">
+            <column name="reminder_startDate" length="19" />
+        </property>
+        <property name="reminderEndDate" type="timestamp">
+            <column name="reminder_endDate" length="19" />
+        </property>
+        <property name="reminderCreateDate" type="timestamp">
+            <column name="reminder_createDate" length="19" />
+        </property>
+        <property name="reminderPersonnel" type="java.lang.Integer">
+            <column name="reminder_personnel" />
+        </property>
+    </class>
+</hibernate-mapping>

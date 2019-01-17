@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.Adisyon" table="adisyon" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="adisyonId" type="java.lang.Integer">
+            <column name="adisyon_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="reservation" class="com.hotelrezervation.model.Reservation" lazy="false" fetch="select">
+            <column name="reservation_id" not-null="true" />
+        </many-to-one>
+        <set name="adisyonProductses" table="adisyon_products" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="adisyon_id" />
+            </key>
+            <one-to-many class="com.hotelrezervation.model.AdisyonProducts" />
+        </set>
+    </class>
+</hibernate-mapping>

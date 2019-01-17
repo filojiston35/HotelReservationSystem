@@ -1,0 +1,54 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.Reservation" table="reservation" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="reservationId" type="java.lang.Integer">
+            <column name="reservation_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="rooms" class="com.hotelrezervation.model.Rooms" lazy="false" fetch="select">
+            <column name="room_id" not-null="true" />
+        </many-to-one>
+        <property name="reservationCreateDate" type="timestamp">
+            <column name="reservation_createDate" length="19" not-null="true" />
+        </property>
+        <property name="reservationStartDate" type="timestamp">
+            <column name="reservation_startDate" length="19" not-null="true" />
+        </property>
+        <property name="reservationEndDate" type="timestamp">
+            <column name="reservation_endDate" length="19" not-null="true" />
+        </property>
+        <property name="reservationName" type="string">
+            <column name="reservation_name" length="45" />
+        </property>
+        <property name="reservationComment" type="string">
+            <column name="reservation_comment" length="65535" />
+        </property>
+        <property name="reservationHasBaby" type="java.lang.Boolean">
+            <column name="reservation_hasBaby" />
+        </property>
+        <property name="reservationPeopleCount" type="java.lang.Integer">
+            <column name="reservation_peopleCount" />
+        </property>
+        <property name="reservationMail" type="string">
+            <column name="reservation_mail" length="60" />
+        </property>
+        <property name="reservationPhone" type="string">
+            <column name="reservation_phone" length="45" />
+        </property>
+        <property name="reservationPrice" type="double">
+            <column name="reservation_price" precision="22" scale="0" />
+        </property>
+        <property name="reservationHasPrice" type="java.lang.Boolean">
+            <column name="reservation_hasPrice" />
+        </property>
+        <set name="adisyons" table="adisyon" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="reservation_id" not-null="true" />
+            </key>
+            <one-to-many class="com.hotelrezervation.model.Adisyon" />
+        </set>
+    </class>
+</hibernate-mapping>

@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.Rooms" table="rooms" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="roomId" type="java.lang.Integer">
+            <column name="room_id" />
+            <generator class="identity" />
+        </id>
+        <property name="roomName" type="string">
+            <column name="room_name" length="45" />
+        </property>
+        <property name="roomNo" type="string">
+            <column name="room_no" length="45" />
+        </property>
+        <set name="reservations" table="reservation" inverse="true" lazy="false" fetch="select">
+            <key>
+                <column name="room_id" not-null="true" />
+            </key>
+            <one-to-many class="com.hotelrezervation.model.Reservation" />
+        </set>
+    </class>
+</hibernate-mapping>

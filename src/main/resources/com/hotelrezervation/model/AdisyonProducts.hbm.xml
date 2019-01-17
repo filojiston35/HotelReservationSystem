@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.AdisyonProducts" table="adisyon_products" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="adisyonProductsId" type="java.lang.Integer">
+            <column name="adisyon_products_id" />
+            <generator class="identity" />
+        </id>
+        <many-to-one name="adisyon" class="com.hotelrezervation.model.Adisyon" lazy="false" fetch="select">
+            <column name="adisyon_id" />
+        </many-to-one>
+        <many-to-one name="products" class="com.hotelrezervation.model.Products" lazy="false" fetch="select">
+            <column name="products_id" />
+        </many-to-one>
+        <property name="purchaseDate" type="timestamp">
+            <column name="purchase_date" length="19" />
+        </property>
+        <property name="productQuantity" type="java.lang.Integer">
+            <column name="product_quantity" />
+        </property>
+    </class>
+</hibernate-mapping>

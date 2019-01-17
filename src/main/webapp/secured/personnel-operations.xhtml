@@ -1,0 +1,283 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions">
+
+    <link rel="stylesheet" href="../resources/css/imageUpload.css"/>
+    <link href="../resources/css/personnel-operations.css" rel="stylesheet" type="text/css"/>
+    <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+                    <p:outputPanel id="outputPanel">
+                        <h:form id="personnelForm">
+                            <p:messages autoUpdate="true" style="font-size:13px;" closable="true"/>
+                            <p:scrollPanel id="personnelDataTableScroll" mode="native"> 
+                                <p:dataTable style="text-align: center;" id="personnelList" class="eventListTable" var="person" value="#{personnelOperations.personnel}" emptyMessage="#{msg.emptyMessage}">
+                                    <f:facet name="header">
+                                        #{msg.personnelOperations}
+                                    </f:facet>
+                                    <p:columnGroup type="header">
+                                        <p:row style="text-align: center;">
+                                            <p:column colspan="1" headerText="" style="width: 5% !important;"/>
+                                            <p:column colspan="1" style="width: 15% !important;" headerText="#{msg.personnelOperationsName}" footerText="#{msg.personnelOperationsName}"/>
+                                            <p:column colspan="1" style="width: 15% !important;" headerText="#{msg.personnelOperationsSurname}" footerText="#{msg.personnelOperationsSurname}"/>
+                                            <p:column colspan="1" style="width: 15% !important;" headerText="#{msg.personnelOperationsDepartment}" footerText="#{msg.personnelOperationsDepartment}"/>
+                                            <p:column colspan="1" style="width: 20% !important;" headerText="#{msg.personnelOperationsMail}" footerText="#{msg.personnelOperationsMail}"/>
+                                            <p:column colspan="1" style="width: 10% !important;" headerText="#{msg.personnelOperationsPhone}" footerText="#{msg.personnelOperationsPhone}"/>
+                                            <p:column style="text-align:center;width:10%;" colspan="3" headerText="#{msg.personnelOperationsOperations}" footerText="#{msg.personnelOperationsOperations}"/>
+                                        </p:row>
+                                    </p:columnGroup>
+                                    <p:column>
+                                        <h:graphicImage rendered="#{person.personnelImage eq null}" class="datatable-personnel-image" value="../resources/images/user-regular.svg" />
+                                        <h:graphicImage rendered="#{person.personnelImage ne null}" class="datatable-personnel-image" value="../resources/upload/#{person.personnelImage}" />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{person.personnelName.toUpperCase()}" />
+                                    </p:column>
+
+                                    <p:column>
+                                        <h:outputText value="#{person.personnelSurname.toUpperCase()}" />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{person.departments.departmentsName.toUpperCase()}" />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{person.personnelMail}" />
+                                    </p:column>
+                                    <p:column>
+                                        <h:outputText value="#{person.personnelPhone}" />
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandLink style="text-align: center;" update="personnelDetail" oncomplete="PF('personnelDialog').show()">
+                                            <i class="fas fa-address-card fa-1x personnel-operations-icon"></i>
+                                            <f:setPropertyActionListener value="#{person}" target="#{personnelOperations.selectedPersonel}" />
+                                        </p:commandLink>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandLink actionListener="#{personnelOperations.setSelectedPersonel(person)}" style="text-align: center;" update=":personnelInsertForm:personelInsertContainer" class="commandlink" oncomplete="PF('personnelInsertAndUpdate').show()">
+                                            <i class="fas fa-pencil-alt fa-1x personnel-operations-icon"></i>
+                                        </p:commandLink>
+                                    </p:column>
+                                    <p:column>
+                                        <p:commandLink style="text-align: center;" class="commandlink" actionListener="#{personnelOperations.deletePersonnel(person)}" update="personnelForm:personnelList" oncomplete="dataTableAutoScroll();">
+                                            <p:confirm header="#{msg.personnelOperationsConfirmation}" message="#{msg.personnelOperationsConfirmationMessage}" icon="ui-icon-alert" />
+                                            <i class="fas fa-trash-alt fa-1x personnel-operations-icon"></i>
+                                        </p:commandLink>
+                                    </p:column>
+                                </p:dataTable>
+                            </p:scrollPanel>
+                        </h:form>
+                        <h:form>
+                            <div style="padding-top:10px;">
+                                <p:commandLink class="btn btn-primary" update=":personnelInsertForm" actionListener="#{personnelOperations.selectedPersonelEmpty()}" oncomplete="PF('personnelInsertAndUpdate').show()">
+                                    <i class="fas fa-plus-square"></i><i style="padding:10px;">#{msg.personnelAddNewPersonnel}</i>
+                                </p:commandLink>
+                            </div>
+                        </h:form>
+
+                        <!--PERSONEL DETAIL DIALOG-->
+                        <p:dialog header="#{msg.personnelOperationsPersonnelInfo}" widgetVar="personnelDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                            <p:outputPanel id="personnelDetail" style="text-align:left;font-family:sans-serif;font-size:14px;">
+                                <p:panelGrid styleClass="personnelDetailPanel" rendered="#{not empty personnelOperations.selectedPersonel}" columnClasses="label,value">
+                                    <p:row >
+                                        <p:column colspan="2" style="text-align:center;">
+                                            <h:graphicImage rendered="#{personnelOperations.selectedPersonel.personnelImage eq null}" class="imgpreview" value="../resources/images/user-regular.svg" />
+                                            <h:graphicImage rendered="#{personnelOperations.selectedPersonel.personnelImage ne null}" class="imgpreview" value="../resources/upload/#{personnelOperations.selectedPersonel.personnelImage}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelName!=null}" value="#{msg.personnelupdatename}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelName!=null}" value="#{personnelOperations.selectedPersonel.personnelName.toUpperCase()}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelSurname!=null}" value="#{msg.personnelupdatesurname}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelSurname!=null}" value="#{personnelOperations.selectedPersonel.personnelSurname.toUpperCase()}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.departments!=null}" value="#{msg.personneldepartment}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.departments!=null}" value="#{personnelOperations.selectedPersonel.departments.departmentsName.toUpperCase()}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelMail!=null}" value="#{msg.personnelupdatemail}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelMail!=null}" value="#{personnelOperations.selectedPersonel.personnelMail}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="#{msg.personneltc}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelTc!=null}" value="#{personnelOperations.selectedPersonel.personnelTc}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="#{msg.personnelupdatephone}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText rendered="#{personnelOperations.selectedPersonel.personnelPhone!=null}" value="#{personnelOperations.selectedPersonel.personnelPhone}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="#{msg.personnelManagmentAuthority}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{msg[personnelOperations.selectedPersonel.personnelManagmentAuhority]}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="#{msg.personnelReservationAuthority}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{msg[personnelOperations.selectedPersonel.personnelReservationAuthority]}" />
+                                        </p:column>
+                                    </p:row>
+
+                                    <p:row>
+                                        <p:column>
+                                            <h:outputText value="#{msg.personnelAdditionAuthority}" />
+                                        </p:column>
+                                        <p:column>
+                                            <h:outputText value="#{msg[personnelOperations.selectedPersonel.personnelAdditionAuthority]}" />
+                                        </p:column>
+                                    </p:row>
+                                </p:panelGrid>
+                            </p:outputPanel>
+                        </p:dialog>
+
+                        <!--PERSONEL INSERT-UPDATE DIALOG-->
+                        <h:form id="personnelInsertForm">
+                            <p:dialog header="#{msg.personnelInsertUpdeteForm}" widgetVar="personnelInsertAndUpdate" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+
+                                <p:outputPanel id="personelInsertContainer">
+                                    <div data-balloon="&#9787; #{msg.maxCharacter25} &#10;&#9787; #{msg.specialCharacter}" data-balloon-break="data-balloon-break" data-balloon-pos="down" class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputText id="personnel_name" placeholder="#{msg.personnelupdatename}" maxlength="25" value="#{personnelOperations.selectedPersonel.personnelName}" requiredMessage="#{msg.personnelupdatenamerequired}" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ']+$" message="#{msg.personnelupdatename} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.personnelupdatename} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div data-balloon="&#9787; #{msg.maxCharacter25} &#10;&#9787; #{msg.specialCharacter}" data-balloon-break="data-balloon-break" data-balloon-pos="down" class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputText id="personnel_surname" placeholder="#{msg.personnelupdatesurname}" maxlength="25" validatorMessage="#{msg.personnelupdatesurnamevalidator}" value="#{personnelOperations.selectedPersonel.personnelSurname}" requiredMessage="#{msg.personnelupdatesurnamerequired}" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ']+$" message="#{msg.personnelupdatesurname} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.personnelupdatesurname} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <h:selectOneMenu id="personnel_department" style="width: 100%;" class="personnel_departments" value="#{personnelOperations.selectedPersonel.departments.departmentsId}" requiredMessage="#{msg.personnelupdatedepartmentrequired}" required="true">
+                                            <f:selectItem  itemLabel="#{msg.personnelupdateselectdepartment}" itemValue=""/>
+                                            <f:selectItems value="#{departmentOperations.hashDepartments}" />
+                                        </h:selectOneMenu>
+
+                                    </div>
+
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputMask mask="99" placeholder="#{msg.personnelage}" value="#{personnelOperations.selectedPersonel.personnelAge}"/>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputMask mask="99999999999" placeholder="#{msg.personneltc}" value="#{personnelOperations.selectedPersonel.personnelTc}"/>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-envelope"></i>
+                                        <p:inputText id="personnel_mail" placeholder="#{msg.personnelmail}" value="#{personnelOperations.selectedPersonel.personnelMail}" validatorMessage="#{msg.reservationMailValidatorMessage}" required="true" requiredMessage="#{msg.personnelupdatemailrequired}"> 
+                                            <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fas fa-phone"></i>
+                                        <p:inputMask placeholder="#{msg.personnelphone}" value="#{personnelOperations.selectedPersonel.personnelPhone}" mask="+99 (999) 999-9999"/>
+                                    </div>
+                                    <div>
+                                        <p:fieldset legend="#{msg.personnelauthority}" style="margin-bottom:20px">
+                                            <table style="font-size:13px;">
+                                                <tr>
+                                                    <td width="150px">
+                                                        <h:outputText value="#{msg.personnelManagmentAuthority}" />
+                                                    </td>
+                                                    <td style="padding-left:10px;padding-bottom:3px;">
+                                                        <p:selectBooleanButton id="value1" value="#{personnelOperations.selectedPersonel.personnelManagmentAuhority}" onLabel="#{msg['true']}" offLabel="#{msg['false']}" style="width:60px" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <h:outputText value="#{msg.personnelAdditionAuthority}" />
+                                                    </td>
+                                                    <td style="padding-left:10px;padding-bottom:3px;">
+                                                        <p:selectBooleanButton id="value2" value="#{personnelOperations.selectedPersonel.personnelAdditionAuthority}" onLabel="#{msg['true']}" offLabel="#{msg['false']}" style="width:60px" />
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>
+                                                        <h:outputText value="#{msg.personnelReservationAuthority}" />
+                                                    </td>
+                                                    <td style="padding-left:10px;padding-bottom:3px;">
+                                                        <p:selectBooleanButton id="value3" value="#{personnelOperations.selectedPersonel.personnelReservationAuthority}" onLabel="#{msg['true']}" offLabel="#{msg['false']}" style="width:60px" />
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </p:fieldset>
+                                    </div>
+                                    <div>
+                                        <p:commandButton id="personnelInsertButton" class="personnel-insert-dialog-commandButton" update="personnelForm:personnelList" rendered="#{personnelOperations.selectedPersonel.personnelId eq null}" value="#{msg.personnelAddNewPersonnel}" actionListener="#{personnelOperations.addNewPersonnel()}" oncomplete="PF('personnelInsertAndUpdate').hide()" onclick="dataTableAutoScroll();"/>
+                                    </div>
+                                    <div>
+                                        <p:commandButton class="personnel-insert-dialog-commandButton" update="personnelForm:personnelList,usernameAndPasswordForm" rendered="#{personnelOperations.selectedPersonel.personnelId ne null}" value="#{msg.personnelUpdatePersonnel}"  actionListener="#{personnelOperations.updatexPersonnel()}" onclick="PF('personnelInsertAndUpdate').hide()"/> 
+
+                                    </div>
+                                </p:outputPanel>
+
+                            </p:dialog>
+                        </h:form>
+                        <h:form id="loadingScreenForm">
+                            <p:dialog id="loadingScreenDialog" widgetVar="loadingScreen" modal="true" showEffect="fade" hideEffect="fade" resizable="false" draggable="false" closable="false">
+                                <img src="../resources/images/loading.gif" alt=""/>
+                            </p:dialog>
+                        </h:form>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+    <script src="../resources/scripts/personnel-operations.js"></script>
+</ui:composition>
+

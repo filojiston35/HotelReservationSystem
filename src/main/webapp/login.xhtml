@@ -1,0 +1,40 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <div id="container">
+        <div id="header">
+            <ui:include src="template/header2.xhtml"/>
+        </div>
+        <f:view locale="#{languageController.language}">
+        <div id="content">
+            <p:outputPanel id="outputPanel">
+                <div class="box">
+                    <h2>#{msg.login}</h2>
+                    <h:form id="loginForm">
+                        <div class="inputBox">
+                            <h:inputText value="#{loginControl.personnel_Mail}" styleClass="text-input"/>
+                            <h:outputLabel>#{msg.mail}</h:outputLabel>
+                        </div>
+                        <div class="inputBox">
+                            <h:inputSecret value="#{loginControl.personnel_Password}" styleClass="text-input"/>
+                            <h:outputLabel>#{msg.password}</h:outputLabel>
+                        </div>
+                        <h:commandButton value="#{msg.login}"  action="#{loginControl.connect()}" />
+                        <div>
+                            <h:outputLabel rendered="#{loginControl.errorMessage}" styleClass="error-message"> <i class="fa fa-warning"></i>  #{msg.loginErrorMessage}</h:outputLabel>
+                        </div>
+                        <div style="padding-top:15px;">
+                            <p:commandLink id="forgotPasswordLink" value="#{msg.loginforgotpassword}" update="outputPanel" action="forgotPassword.xhtml?faces-redirect=true"/>
+                        </div>
+
+                    </h:form>
+                </div>
+            </p:outputPanel>
+        </div>
+        </f:view>
+    </div>
+</ui:composition>

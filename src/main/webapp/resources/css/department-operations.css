@@ -1,0 +1,29 @@
+#departmentTable
+{
+    text-align: center;
+    width:100%;
+}
+#departmentTable tr:first-child td{
+  
+}
+.personnel-insert-dialog-commandButton{
+    padding: 5px!important;
+    background: dodgerblue!important;
+    color: white!important;
+    width: 100%!important;
+    text-align: center!important;
+    border: none!important;
+}
+.personnelDetailPanel.ui-panelgrid>*>tr,
+.personnelDetailPanel.ui-panelgrid .ui-panelgrid-cell {
+    background-color:white;
+}
+.myPanel.ui-panelgrid>*>tr{
+    border:none;
+}
+.imgpreview{
+    width:60%;
+    height:60%;
+    margin-bottom:10px;
+    padding: 10px;
+}

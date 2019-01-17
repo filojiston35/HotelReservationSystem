@@ -1,0 +1,4 @@
+.barChartStyleClass table.jqplot-table-legend {
+    right:100px !important;
+    transtion:0.4s !important;
+}

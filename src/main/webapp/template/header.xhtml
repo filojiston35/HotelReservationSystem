@@ -1,0 +1,113 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <h:head>
+        <link rel="stylesheet" type="text/css" href="../resources/css/bootstrap.min.css"/>      
+        <link rel="stylesheet" href="../resources/css/leftSideBar.css"/>
+        <link rel="stylesheet" href="../resources/css/hotel-template.css"/>
+        <link rel="stylesheet" href="../resources/css/baloon.css"/>
+        <link href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet"/>
+        <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.3.1/css/all.css"/>
+        <title>Hotel Reservation 1.0</title>
+    </h:head>
+    <h:form>
+        <p:confirmDialog global="true" showEffect="fade" hideEffect="fade">
+            <p:commandButton value="Yes" type="button" styleClass="ui-confirmdialog-yes" icon="ui-icon-check" />
+            <p:commandButton value="No" type="button" styleClass="ui-confirmdialog-no" icon="ui-icon-close" />
+        </p:confirmDialog>
+    </h:form>
+    <div style="width:100%;position:fixed;height:50px;z-index:2;">
+        <h:panelGroup id="leftSideBarButtonID" rendered="#{loginControl.isLoggedin}" layout="block"><div class="leftSidebarButton" style="float: left;"></div></h:panelGroup>
+        <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+
+            <div class="navbar-collapse collapse w-100 order-1 order-md-0 dual-collapse2"  >                    
+                <ul class="navbar-nav mr-auto" style="text-align:right;">
+                    <li class="nav-item">
+                        <h:outputLink rendered="#{!loginControl.isLoggedin}" class="nav-link" value = "login.xhtml" >#{msg.login}</h:outputLink>
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href="#"></a>
+                    </li>
+                </ul>
+            </div>
+            <div class="mx-auto order-0">
+                <h:form><h:commandLink class="navbar-brand mx-auto" action="login.xhtml?faces-redirect=true" >#{msg.hotelrezervationsystem}</h:commandLink></h:form>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target=".dual-collapse2">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse w-100 order-3 dual-collapse2">
+                <ul class="navbar-nav ml-auto">
+                    <!-- Language support -->
+                    <li class="nav-item">
+                        <h:form id="usernameAndPasswordForm">
+                            <a href="profile.xhtml?faces-redirect=true">
+
+                                <div class="usernameAndPassword">
+                                    <p:graphicImage rendered="#{loginControl.isLoggedin}" value="../resources/upload/#{profile.loginControl.personnel.personnelImage}" />
+                                    <h:outputText rendered="#{loginControl.isLoggedin}" value="#{loginControl.personnel.personnelName.toUpperCase()} #{loginControl.personnel.personnelSurname.toUpperCase()}"/>
+                                </div>
+                            </a>
+                        </h:form>
+                    </li>
+                    <li class="nav-item">
+                        <h:form  rendered="#{loginControl.isLoggedin}"  id="newEventSizeForm">
+                            <a class="nav-link" href="event-operations.xhtml?faces-redirect=true">
+                                <div class="newEventSizeButton">
+                                    <i class="fas fa-bell fa-lg"></i>
+                                    <h:outputText class="newEventSizeButton__badge" rendered="#{eventOperations.personnelNewEventSize!=0}" value="#{eventOperations.personnelNewEventSize}"/>
+                                </div>
+                            </a>
+                        </h:form>
+                    </li>
+                    <li class="nav-item">
+                        <div class="dropdown">
+                            <i class="fas fa-globe fa-lg dropbtn" onclick="myFunction()"></i>
+                            <div id="myDropdown" class="dropdown-content">
+                                <h:form>
+                                    <h:commandLink value="TR" action="#{languageController.actionTurkce}"/>
+                                    <h:commandLink value="EN" action="#{languageController.actionEnglish}"/>
+                                </h:form>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <h:form id="leftSidebarForm">
+        <h:panelGroup rendered="#{loginControl.isLoggedin}" layout="block">
+            <div id="leftSidebar" class="bg-dark">
+                <ul>
+                    <p:commandLink class="commandlink" update="outputPanel" action="home.xhtml?faces-redirect=true"><li><i class="fas fa-home icon"></i>#{msg.mainpage}</li></p:commandLink>
+                    <p:commandLink rendered="#{loginControl.personnel.personnelReservationAuthority}" class="commandlink" update="outputPanel" action="reservation-operations.xhtml?faces-redirect=true"><li><i class="fas fa-hand-holding-usd icon"></i>#{msg.reservationoperations}</li></p:commandLink>
+                    <p:commandLink rendered="#{loginControl.personnel.personnelAdditionAuthority}" class="commandlink" update="outputPanel" action="adisyon-operations.xhtml?faces-redirect=true"><li><i class="far fa-sticky-note icon"></i>#{msg.addition}</li></p:commandLink>
+                    <p:commandLink class="commandlink" update="outputPanel" action="event-operations.xhtml?faces-redirect=true"><li><i class="fas fa-tasks icon"></i>#{msg.eventOperation}</li></p:commandLink>
+                    <p:commandLink rendered="#{loginControl.personnel.personnelManagmentAuhority}" class="commandlink" id="managment-dropdown"><li><i class="fas fa-cogs icon"></i>#{msg.managment} <span style="position: absolute;right:0;"><i class="fas fa-arrow-down icon"></i></span></li></p:commandLink>
+                    <ul id="managment-options" class="submenu">
+                        <p:commandLink class="commandlink" update="outputPanel" action="personnel-operations.xhtml?faces-redirect=true"><li><i class="fas fa-users icon"></i>#{msg.personneloperations}</li></p:commandLink>
+                        <p:commandLink class="commandlink" update="outputPanel" action="room-operations.xhtml?faces-redirect=true"><li><i class="fas fa-door-closed icon"></i>#{msg.roomoperations}</li></p:commandLink>
+                        <p:commandLink class="commandlink" update="outputPanel" action="department-operations.xhtml?faces-redirect=true"><li><i class="far fa-building icon"></i>#{msg.departmentoperations}</li></p:commandLink>
+                        <p:commandLink class="commandlink" update="outputPanel" action="product-operations.xhtml?faces-redirect=true"><li><i class="fas fa-beer icon"></i>#{msg.productoperation}</li></p:commandLink>
+                        <p:commandLink class="commandlink" update="outputPanel" action="statistics-operations.xhtml?faces-redirect=true"><li><i class="fas fa-chart-bar icon"></i>#{msg.statistics}</li></p:commandLink>
+                    </ul>
+                    <p:commandLink class="commandlink" id="personal-dropdown"><li><i class="fas fa-user-alt icon"></i>#{msg.personelsettings}<span style="position: absolute;right:0;"><i class="fas fa-arrow-down icon"></i></span></li></p:commandLink>
+                    <ul id="personal-settings" class="submenu">
+                        <p:commandLink class="commandlink" update="outputPanel" action="passwordChange.xhtml?faces-redirect=true"><li><i class="fas fa-key icon"></i>#{msg.passwordChange}</li></p:commandLink>
+                        <p:commandLink class="commandlink" update="outputPanel" action="profile.xhtml?faces-redirect=true"><li><i class="fas fa-user-alt icon"></i>#{msg.profile}</li></p:commandLink>
+                    </ul>
+                    <p:commandLink class="commandlink" action="#{loginControl.logout()}"><li><i class="fas fa-power-off icon"></i>#{msg.logout}</li></p:commandLink>
+                </ul>
+            </div>
+        </h:panelGroup>
+    </h:form>
+    <script src="../resources/scripts/leftSideBar.js"></script>
+    <script src="../resources/scripts/hotel-template.js"></script>
+
+</ui:composition>

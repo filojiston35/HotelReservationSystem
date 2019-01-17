@@ -1,0 +1,43 @@
+.box{
+    position: absolute;
+    top:50%;
+    left:50%;
+    transform: translate(-50%,-50%);
+    width: 600px;
+    padding: 40px;
+    background: rgba(0,0,0,.8);
+    font-family:sans-serif;
+    box-sizing: border-box;
+    box-shadow: 0 15px 25px rgba(0,0,0,.5);
+    border-radius: 10px;
+}
+.box h3{
+    margin:0;
+    padding-bottom:30px;
+    color:#fff;
+    text-align: center;
+
+}
+.personnel-image{
+    width:120px;
+    height:100px;
+}
+.box table{
+
+    color:white;
+}
+.box table td{
+    text-indent:10px;
+    width:250px;
+}
+.box table .image-column{
+    text-align:center;
+}
+.personnel-insert-dialog-commandButton{
+    padding: 5px!important;
+    background: dodgerblue!important;
+    color: white!important;
+    width: 100%!important;
+    text-align: center!important;
+    border: none!important;
+}

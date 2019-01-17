@@ -1,0 +1,24 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.EventPersonnel" table="event_personnel" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="eventPersonnelId" type="int">
+            <column name="event_personnel_id" />
+            <generator class="increment"></generator>  
+        </id>
+        <property name="eventIsRead" type="boolean">
+            <column name="event_isRead" not-null="true" />
+        </property>
+        <many-to-one name="eventDetail" class="com.hotelrezervation.model.EventDetail" lazy="false" fetch="select">
+            <column name="event_detail_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="personnelByEventSenderId" class="com.hotelrezervation.model.Personnel" lazy="false" fetch="select">
+            <column name="event_sender_id" not-null="true" />
+        </many-to-one>
+        <many-to-one name="personnelByPersonnelId" class="com.hotelrezervation.model.Personnel" lazy="false" fetch="select">
+            <column name="personnel_id" not-null="true" />
+        </many-to-one>
+    </class>
+</hibernate-mapping>

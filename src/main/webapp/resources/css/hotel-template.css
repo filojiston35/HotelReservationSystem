@@ -1,0 +1,187 @@
+.languageIcon:before
+{
+    cursor:pointer;
+    content: "\f1ab";
+    font-family: FontAwesome;
+    color:white;
+    font-size: 28px;
+    margin:0;
+    top:0;   
+}
+.languageIcon{
+    background-color: #343A40;
+    cursor: pointer;
+}
+#content
+{
+    left:0px;
+    padding:10px;
+    transition: margin-left 0.4s;
+}
+.contentShowEffect{
+
+    margin-left: 220px;
+    transition: margin-left 0.4s;
+}
+.languageOptionClass {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 160px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+.languageOptionClass li {
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+    list-style: none;
+}
+.languageOptionClass li:hover {
+    background-color: #ddd;
+}
+.dropdown {
+    padding-top:8px;
+    color: #ddd;
+    display: inline-block;
+    position: relative;
+    padding-right:30px;
+}
+.dropdown:hover{
+    color:white;
+    transition: 0.4s;
+    cursor:pointer;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    background-color: #f1f1f1;
+    min-width: 40px;
+    overflow: auto;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1;
+}
+
+.dropdown-content a {
+
+    color: black;
+    padding: 12px 16px;
+    text-decoration: none;
+    display: block;
+}
+
+.dropdown a:hover {background-color: #ddd;}
+
+.show {display: block;}
+
+.icon{
+    padding-right: 5px;
+}
+.primefaces-icon{
+    width: 25px;
+    height: 25px;
+}
+.personnel-operations-icon{
+    color:black;
+    transition: all 0.2s linear; 
+}
+.personnel-operations-icon:hover{
+    color:dodgerblue;
+    transition: all 0.2s linear; 
+    text-shadow: 2px 0px 30px #0000FF;
+}
+.personnel-insert-dialog{
+    display: -ms-flexbox; /* IE10 */
+    display: flex;
+    width: 100%;
+    margin-bottom: 15px;
+    font-size: 13px;
+}
+.personnel-insert-dialog input{
+    width: 100%;
+}
+.personnel-insert-dialog i{
+    padding: 10px;
+    background: dodgerblue;
+    color: white;
+    min-width: 50px;
+    text-align: center;
+}
+
+
+.personnel-insert-dialog-commandButton{
+    padding: 5px!important;
+    background: dodgerblue!important;
+    color: white!important;
+    width: 100%!important;
+    text-align: center!important;
+    border: none!important;
+}
+.datatable-personnel-image{
+    width:40px;
+    height:40px;
+    padding:5px;
+}
+#outputPanel{
+    padding-top:60px;
+    z-index:0;
+}
+.eventListTable{
+    font-size:16px !important;
+    border-bottom:1px solid #ddd;
+}
+.eventListTable table > thead > tr > th{
+    border:none !important;
+}
+.eventListTable table > tbody,
+.eventListTable table > tbody > tr,
+.eventListTable table > tbody > tr > td {
+    border-bottom: 1px solid #ddd;
+    border-left:none !important;
+    border-right: none !important;
+    border-top:none !important;
+}
+.newEventSizeButton {
+    color: #ddd;
+    display: inline-block; /* Inline elements with width and height. TL;DR they make the icon buttons stack from left-to-right instead of top-to-bottom */
+    position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+    padding-right:10px; /* Add some padding so it looks nice */
+}
+.newEventSizeButton:hover{
+    color:white;
+    transition: 0.4s;
+
+}
+
+/* Make the badge float in the top right corner of the button */
+.newEventSizeButton__badge {
+    background-color: #fa3e3e;
+    border-radius: 5px;
+    color: white;
+    padding-left:2px;
+    padding-right:2px;
+    font-size: 10px;
+
+    position: absolute; /* Position the badge within the relatively positioned button */
+    top: 0;
+    right: 0;
+}
+.usernameAndPassword{
+    color:white;
+    padding-right:20px;
+    padding-top:6px;
+    cursor:pointer;
+    font-size:13px;
+}
+.usernameAndPassword img{
+    margin-right:5px;
+    width:30px;
+    height:30px;
+    border-radius:20px;
+    color:white;
+    background-color:white;
+}
+

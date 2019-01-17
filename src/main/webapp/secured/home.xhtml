@@ -1,0 +1,158 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core">
+    <link rel="stylesheet" href="../resources/css/home.css"/>
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+                    <p:outputPanel id="outputPanel">
+                        <p:dataGrid var="room" value="#{homePage.roomActions}" columns="4" layout="grid"
+                                    rows="12" paginator="true" id="adisyonList"
+                                    paginatorTemplate="{CurrentPageReport}  {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                    rowsPerPageTemplate="6,12,16">
+
+                            <f:facet name="header">
+                                #{msg.reservationActions}
+                            </f:facet>
+
+                            <p:panel header=" - #{room.room.roomNo} - #{room.room.roomName}" style="text-align:center"  >
+                                <p:panel>
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="5%" >
+                                                <i style="color:green;padding-right:10px;" class="fas fa-arrow-down"></i>
+                                            </td>
+                                            <td width="90%" align="left" style="max-width:100px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                                                <h:outputText  value="#{room.inReservation.reservationName}"/>
+                                                <h:outputText rendered="#{room.inReservation==null}" value="----"/>
+                                            </td>
+                                            <td width="5%">
+                                                <p:commandLink rendered="#{room.inReservation!=null}" actionListener="#{homePage.setSelectedReservation(room.inReservation)}" style="text-align: center;padding-left:5px;" update=":reservationDetail" onclick="deneme('#{room.inReservation.reservationComment}')" oncomplete="PF('reservationDialog').show()" class="showAdisyonDetail">                      
+                                                    <i class="fas fa-search"></i>
+                                                </p:commandLink>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p:panel>
+                                <p:panel>
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="5%" >
+                                                <i style="color:red;padding-right:10px;" class="fas fa-arrow-up"></i>
+                                            </td>
+                                            <td  width="90%" align="left" style="max-width:100px;overflow: hidden;text-overflow: ellipsis;white-space: nowrap;">
+                                                <h:outputText value="#{room.outReservation.reservationName}"/>
+                                                <h:outputText rendered="#{room.outReservation==null}" value="----"/>
+                                            </td>
+                                            <td width="5%">
+                                                <p:commandLink rendered="#{room.outReservation!=null}" actionListener="#{homePage.setSelectedReservation(room.outReservation)}" style="text-align: center;padding-left:5px;" update=":reservationDetail" onclick="deneme('#{room.outReservation.reservationComment}')" oncomplete="PF('reservationDialog').show()" class="showAdisyonDetail">                      
+                                                    <i class="fas fa-search"></i>
+                                                </p:commandLink>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </p:panel>
+                            </p:panel>
+                        </p:dataGrid>
+                        <!--Reservation Detail Dialog -->
+                        <p:dialog header="#{msg.reservationDetail}" widgetVar="reservationDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                            <p:outputPanel id="reservationDetail" style="text-align:left;font-family:sans-serif;font-size:16px;" >
+                                <table width="450px" style="text-align:center;">
+                                    <tr>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationName!=null}" value="#{msg.reservationName}" />   
+                                        </td>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.rooms!=null}" value="#{msg.roomName}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationName!=null}" value="#{homePage.selectedReservation.reservationName}" />    
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.rooms.roomName!=null}" value="#{homePage.selectedReservation.rooms.roomNo} ( #{homePage.selectedReservation.rooms.roomName} )"/>
+                                            <h:outputText rendered="#{homePage.selectedReservation.rooms.roomName==null}" value="#{homePage.selectedReservation.rooms.roomNo}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationMail!=null}" value="#{msg.reservationMail}" />   
+                                        </td>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationPhone!=null}" value="#{msg.reservationPhone}" />   
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationMail!=null}" value="#{homePage.selectedReservation.reservationMail}" />   
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationPhone!=null}" value="#{homePage.selectedReservation.reservationPhone}" />   
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationStartDate!=null}" value="#{msg.reservationStartDate}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationEndDate!=null}" value="#{msg.reservationEndDate}" /> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationStartDate!=null}" value="#{dateFormat.getMyFormattedDate(homePage.selectedReservation.reservationStartDate)}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationEndDate!=null}" value="#{dateFormat.getMyFormattedDate(homePage.selectedReservation.reservationEndDate)}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationPeopleCount!=null}" value="#{msg.reservationAdult}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText style="font-weight:bold;" class="reservationDetailTitle" rendered="#{homePage.selectedReservation.reservationHasBaby!=null}" value="#{msg.reservationBaby}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationPeopleCount!=null}" value="#{homePage.selectedReservation.reservationPeopleCount}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{homePage.selectedReservation.reservationHasBaby!=null}" value="#{msg[homePage.selectedReservation.reservationHasBaby]}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator rendered="#{homePage.selectedReservation.reservationComment!=null}"/></td>
+                                    </tr>
+                                </table>
+                            </p:outputPanel>
+                            <p:scrollPanel style="height:200px" mode="native">
+                                <div style="width:400px;padding:5px;padding-left:20px;height:200px;padding-bottom:10px;" class="viewEvent"></div>
+                            </p:scrollPanel>
+                        </p:dialog>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+    <script src="../resources/scripts/home.js"></script>
+</ui:composition>

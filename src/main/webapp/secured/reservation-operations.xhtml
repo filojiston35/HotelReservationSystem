@@ -1,0 +1,285 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+                xmlns:h="http://xmlns.jcp.org/jsf/html"
+                xmlns:ui="http://xmlns.jcp.org/jsf/facelets"
+                xmlns:p="http://primefaces.org/ui"
+                xmlns:f="http://xmlns.jcp.org/jsf/core"
+                xmlns:c="http://xmlns.jcp.org/jsp/jstl/core"
+                xmlns:o="http://omnifaces.org/ui"
+                xmlns:of="http://omnifaces.org/functions">
+    <link rel="stylesheet" href="../resources/css/reservation-operations.css"/>
+    <h:body>
+        <f:view locale="#{languageController.language}">
+            <div id="container">
+                <div id="header">
+                    <ui:include src="../template/header.xhtml"/>
+                </div>
+                <div id="content">
+
+                    <p:outputPanel id="outputPanel">
+                        <!--RESERVATION TIMELINE -->
+                        <h:form id="reservationForm">
+                            <c:set target="#{flash}" property="keepMessages" value="true" />
+                            <p:messages autoUpdate="true" redisplay="false" closable="true" showIcon="false" style="font-size:13px;" />
+                            <p:growl autoUpdate="true" redisplay="false"/>
+                            <p:timeline id="reservationList" value="#{reservationOperations.timeLineModel}" var="ee"   
+                                        editable="false" eventMargin="10" eventMarginAxis="0" 
+                                        start="#{reservationOperations.timeLineStart}" 
+                                        end="#{reservationOperations.timeLineEnd}"
+                                        timeZone="#{reservationOperations.now}"
+                                        axisOnTop="true" stackEvents="false" groupsChangeable="false" showNavigation="true" zoomMin="864000000" zoomMax="864000000" timeChangeable="false">
+                                <p:ajax event="select"  process=":reservationForm" listener="#{reservationOperations.onSelect}" update=":reservationInsertForm:reservationInsertContainer,:extraButtons:selectedReservationDetail" />
+                            </p:timeline>
+                        </h:form>
+
+                        <!-- Reservation Insert-Update Form -->
+                        <h:form id="reservationInsertForm">
+                            <p:dialog header="#{msg.reservationInsertUpdateForm}" widgetVar="reservationInsertAndUpdate" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                                <p:outputPanel id="reservationInsertContainer">
+                                    <div data-balloon="&#9787; #{msg.maxCharacter25} &#10;&#9787; #{msg.specialCharacter}" data-balloon-break="data-balloon-break" data-balloon-pos="down" class="personnel-insert-dialog">
+                                        <i class="fa fa-user"></i>
+                                        <p:inputText maxlength="25" placeholder="#{msg.reservationName}" validatorMessage="#{msg.reservationNameValidatorMessage}" value="#{reservationOperations.selectedReservation.reservationName}" requiredMessage="#{msg.reservationNameRequiredMessage}" required="true">
+                                            <o:validator validatorId="javax.faces.RegularExpression" pattern="^[a-zA-Z0-9,ç,Ç,ğ,Ğ,ı,İ,ö,Ö,ş,Ş,ü,Ü,' ']+$" message="#{msg.reservationName} #{msg.RegexValidator}"/>
+                                            <o:validator validatorId="javax.faces.Length" maximum="25" message="#{msg.reservationName} #{msg.maxCharacter25}" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fa fa-envelope"></i>
+                                        <p:inputText id="personnel_mail" placeholder="#{msg.reservationMail}" value="#{reservationOperations.selectedReservation.reservationMail}" validatorMessage="#{msg.reservationMailValidatorMessage}"> 
+                                            <f:validateRegex pattern="^[_A-Za-z0-9-\+]+(\.[_A-Za-z0-9-]+)*@[A-Za-z0-9-]+(\.[A-Za-z0-9]+)*(\.[A-Za-z]{2,})$" />
+                                        </p:inputText>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fas fa-phone"></i>
+                                        <p:inputMask placeholder="#{msg.reservationPhone}" value="#{reservationOperations.selectedReservation.reservationPhone}" mask="+99 (999) 999-9999"/>
+                                    </div>
+                                    <div class="reservation-insert-dialog">
+                                        <i class="fas fa-angle-right"></i>
+                                        <p:calendar mindate="#{reservationOperations.now}" style="padding-right:5px;" placeholder="#{msg.reservationStartDate}" value="#{reservationOperations.selectedReservation.reservationStartDate}" pages="3" requiredMessage="#{msg.reservationStartRequiredMessage}" required="true"/>
+                                        <i class="fas fa-angle-right"></i>
+                                        <p:calendar style="height:30px !important;" mindate="#{reservationOperations.now}" placeholder="#{msg.reservationEndDate}" value="#{reservationOperations.selectedReservation.reservationEndDate}" pages="3" requiredMessage="#{msg.reservationEndRequiredMessage}" required="true"/>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <i class="fas fa-angle-right"></i>
+                                        <h:selectOneMenu style="width: 100%;" class="personnel_departments" value="#{reservationOperations.selectedReservation.rooms.roomId}" requiredMessage="#{msg.reservationRoomRequiredMessage}" required="true">
+                                            <f:selectItem  itemLabel="#{msg.reservationSelectRoom}" itemValue=""/>
+                                            <f:selectItems value="#{reservationOperations.hashRooms}" />
+                                        </h:selectOneMenu>
+                                    </div>
+                                    <div>
+                                        <table style="width:100%;text-align:center;">
+                                            <tr>
+                                                <td colspan="2">
+                                                    <p:separator />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:40%;border-right:2px solid gray;">
+                                                    <h:outputText value="#{msg.reservationBaby}" style="font-size:17px;padding-left:3px;"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{msg.reservationAdult}" style="font-size:17px;padding-left:3px;"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border-right:2px solid gray;">
+                                                    <h:selectBooleanCheckbox class="hasBaby" value="#{reservationOperations.selectedReservation.reservationHasBaby}" />   
+                                                </td>
+                                                <td>
+                                                    <p:inputMask style="width:60px;height:30px;text-align:center;font-size:15px;" mask="9"  value="#{reservationOperations.selectedReservation.reservationPeopleCount}" requiredMessage="#{msg.reservationAdultRequiredMessage}" required="true"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <p:separator />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:40%;border-right:2px solid gray;">
+                                                    <h:outputText value="#{msg.reservationPaid}" style="font-size:17px;padding-left:3px;"/>
+                                                </td>
+                                                <td>
+                                                    <h:outputText value="#{msg.reservationAmount}" style="font-size:17px;padding-left:3px;"/>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="border-right:2px solid gray;">
+                                                    <h:selectBooleanCheckbox class="hasBaby" value="#{reservationOperations.selectedReservation.reservationHasPrice}" />   
+                                                </td>
+                                                <td>
+                                                    <p:inputNumber style="width:100%;font-size:15px;text-align:center;" inputStyle="text-align:center" minValue="0" maxValue="10000000.00" value="#{reservationOperations.selectedReservation.reservationPrice}" symbol=" TL" symbolPosition="s" 
+                                                                   decimalSeparator="," thousandSeparator=".">  
+                                                    </p:inputNumber>  
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td colspan="2">
+                                                    <p:separator />
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </div>
+                                    <div class="personnel-insert-dialog">
+                                        <p:editor controls="bold italic underline strikethrough subscript superscript font size style bullets numbering alignleft center alignright justify" 
+                                                  id="ptexteditor" widgetVar="editor2" value="#{reservationOperations.selectedReservation.reservationComment}" height="200" width="600"
+                                                  style="margin-bottom:10px;background-color:white;">
+                                        </p:editor>
+                                    </div>  
+
+
+                                    <div>
+                                        <p:commandButton  class="personnel-insert-dialog-commandButton" update=":reservationForm" rendered="#{reservationOperations.selectedReservation.reservationName eq null}" value="#{msg.reservationAddNewReservation}" actionListener="#{reservationOperations.insertReservation()}" onclick="PF('reservationInsertAndUpdate').hide()" oncomplete="hideExtraButtons();"/>
+                                    </div>
+                                    <div>
+                                        <p:commandButton  class="personnel-insert-dialog-commandButton" update=":reservationForm" rendered="#{reservationOperations.selectedReservation.reservationName  ne null}" value="#{msg.reservationUpdateReservation}" actionListener="#{reservationOperations.updateReservation()}" onclick="PF('reservationInsertAndUpdate').hide()" oncomplete="hideExtraButtons();"/> 
+                                    </div>
+                                </p:outputPanel>
+                            </p:dialog>
+                        </h:form>
+                        <!--Reservation Detail Dialog -->
+                        <p:dialog header="#{msg.reservationDetail}" widgetVar="reservationDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false" closeOnEscape="true">
+                            <p:outputPanel id="reservationDetail" style="text-align:left;font-family:sans-serif;font-size:16px;" >
+                                <table width="450px" style="text-align:center;">
+                                    <tr>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationName!=null}" value="#{msg.reservationName}" />   
+                                        </td>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.rooms!=null}" value="#{msg.roomName}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationName!=null}" value="#{reservationOperations.selectedReservation.reservationName}" />    
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.rooms.roomName!=null}" value="#{reservationOperations.selectedReservation.rooms.roomNo} ( #{reservationOperations.selectedReservation.rooms.roomName} )"/>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.rooms.roomName==null}" value="#{reservationOperations.selectedReservation.rooms.roomNo}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationMail!=null}" value="#{msg.reservationMail}" />   
+                                        </td>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationPhone!=null}" value="#{msg.reservationPhone}" />   
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationMail!=null}" value="#{reservationOperations.selectedReservation.reservationMail}" />   
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationPhone!=null}" value="#{reservationOperations.selectedReservation.reservationPhone}" />   
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationStartDate!=null}" value="#{msg.reservationStartDate}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationEndDate!=null}" value="#{msg.reservationEndDate}" /> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationStartDate!=null}" value="#{dateFormat.getMyFormattedDate(reservationOperations.selectedReservation.reservationStartDate)}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationEndDate!=null}" value="#{dateFormat.getMyFormattedDate(reservationOperations.selectedReservation.reservationEndDate)}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><p:separator/></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationHasBaby!=null}" value="#{msg.reservationBaby}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" rendered="#{reservationOperations.selectedReservation.reservationPeopleCount!=null}" value="#{msg.reservationAdult}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationHasBaby!=null}" value="#{msg[reservationOperations.selectedReservation.reservationHasBaby]}" />
+                                        </td>
+                                        <td>
+                                            <h:outputText rendered="#{reservationOperations.selectedReservation.reservationPeopleCount!=null}" value="#{reservationOperations.selectedReservation.reservationPeopleCount}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p:separator />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" value="#{msg.reservationPaid}"/>
+                                        </td>
+                                        <td>
+                                            <h:outputText class="reservationDetailTitle" value="#{msg.reservationAmount}"/>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <h:outputText value="#{msg[reservationOperations.selectedReservation.reservationHasPrice]}"/>   
+                                        </td>
+                                        <td>
+                                            <h:outputText value="#{reservationOperations.selectedReservation.reservationPrice}"/> 
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <p:separator />
+                                        </td>
+                                    </tr>
+                                </table>
+
+                            </p:outputPanel>
+                            <p:scrollPanel style="height:200px;" mode="native">
+                                <div style="width:400px;padding-left:20px;" class="viewEvent">
+                                </div>
+                            </p:scrollPanel>
+                        </p:dialog>
+                        <div class="fixed">
+                            <h:form id="extraButtons">
+                                <!--Reservation operation extra buttons-->
+                                <div style="padding-bottom:5px;">
+                                    <p:commandLink class="btn btn-primary reservationInsertButton" style="width:280px !important;text-align:left;" actionListener="#{reservationOperations.selectedRoomReservationEmpty()}" update=":reservationInsertForm:reservationInsertContainer,:reservationForm" onclick="PF('reservationInsertAndUpdate').show()" oncomplete="insertButton()">
+                                        <i class="fas fa-plus-square"></i><i style="padding:10px;">#{msg.reservationAddNewReservation}</i>
+                                    </p:commandLink>
+                                </div>
+                                <div class="reservationExtraButtons" >
+                                    <p:commandLink class="btn btn-success" style="width:260px !important;text-align:left;" update=":reservationInsertForm:reservationInsertContainer" oncomplete="PF('reservationInsertAndUpdate').show()">
+                                        <i class="fas fa-pencil-alt"></i><span style="padding:5px;">#{msg.reservationUpdateReservation}</span>
+                                    </p:commandLink>
+                                </div>
+                                <div class="reservationExtraButtons">
+                                    <p:commandLink id="selectedReservationDetail" class="btn btn-secondary" style="width:240px !important;text-align:left;" update=":reservationDetail,:extraButtons"  onclick="deneme('#{reservationOperations.selectedReservation.reservationComment}')" oncomplete="PF('reservationDialog').show()">
+                                        <i class="fas fa-search"></i><span style="padding:5px;">#{msg.reservationViewReservation}</span>
+                                    </p:commandLink>
+                                </div>
+                                <div class="reservationExtraButtons" >
+                                    <p:commandLink class="btn btn-danger" style="width:220px !important;text-align:left;" actionListener="#{reservationOperations.deleteReservationRoom()}" update=":reservationForm" oncomplete="hideExtraButtons();">
+                                        <p:confirm header="#{msg.personnelOperationsConfirmation}" message="#{msg.personnelOperationsConfirmationMessage}" icon="ui-icon-alert" />
+                                        <i class="fas fa-trash-alt"></i><span style="padding:5px;">#{msg.reservationDeleteReservation}</span>
+                                    </p:commandLink>
+                                </div>
+                            </h:form>
+                        </div>
+                    </p:outputPanel>
+                </div>
+            </div>
+        </f:view>
+    </h:body>
+    <script src="../resources/scripts/reservation-operations.js"></script>
+</ui:composition>
+

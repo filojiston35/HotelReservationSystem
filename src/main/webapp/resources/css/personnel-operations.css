@@ -1,0 +1,40 @@
+.ui-fieldset-legend{
+    height:40px;
+    font-size:15px;
+    width:200px;
+}
+.ui-fieldset{
+    width:100%
+}
+.ui-scrollpanel-content {
+    padding-left: 0px !important;
+    right: 13px;
+}
+
+.ui-scrollpanel {
+    width: 100% !important;
+}
+
+.ui-scrollpanel-container,
+.ui-scrollpanel-content {
+    width: auto !important;
+}
+
+.eventListTable{
+    font-size:16px !important;
+    border-bottom:1px solid #ddd;
+}
+.eventListTable table > thead > tr > th{
+    border:none !important;
+}
+.eventListTable table > tbody,
+.eventListTable table > tbody > tr,
+.eventListTable table > tbody > tr > td {
+    border-bottom: 1px solid #ddd;
+    border-left:none !important;
+    border-right: none !important;
+    border-top:none !important;
+}
+.ui-scrollpanel.ui-scrollpanel-native{
+    border: none;
+}

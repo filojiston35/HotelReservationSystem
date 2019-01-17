@@ -1,0 +1,39 @@
+.eventListTable{
+    font-size:16px !important;
+    border-bottom:1px solid #ddd;
+}
+.eventListTable table > thead > tr > th{
+    border:none !important;
+}
+.eventListTable table > tbody,
+.eventListTable table > tbody > tr,
+.eventListTable table > tbody > tr > td {
+    border-bottom: 1px solid #ddd;
+    border-left:none !important;
+    border-right: none !important;
+    border-top:none !important;
+}
+
+.eventListTable table > tbody:hover,
+.eventListTable table > tbody > tr:hover,
+.eventListTable table > tbody > tr > td:hover{
+    background-color: #ddd !important;
+    cursor:pointer;
+}
+
+.eventListTable table a div{
+    text-decoration:none !important;
+    color:black !important;
+     width:100% !important;
+    height:100% !important;
+    text-align:center;
+}
+.eventListTable table a{
+    text-decoration:none !important;
+    color:black !important;
+   
+
+}
+.ui-datalist-content.ui-widget-content{
+    border: none;
+}

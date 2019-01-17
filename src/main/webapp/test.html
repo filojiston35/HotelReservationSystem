@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>TODO supply a title</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            .navbar {
+                background-color: #3b5998;
+                font-size: 22px;
+                padding: 5px 10px;
+            }
+
+            /* Define what each icon button should look like */
+            .newEventButton {
+                color: white;
+                display: inline-block; /* Inline elements with width and height. TL;DR they make the icon buttons stack from left-to-right instead of top-to-bottom */
+                position: relative; /* All 'absolute'ly positioned elements are relative to this one */
+                padding: 2px 5px; /* Add some padding so it looks nice */
+            }
+
+            /* Make the badge float in the top right corner of the button */
+            .button__badge {
+                background-color: #fa3e3e;
+                border-radius: 2px;
+                color: white;
+
+                padding: 2px 4px;
+                font-size: 10px;
+
+                position: absolute; /* Position the badge within the relatively positioned button */
+                top: 0;
+                right: 0;
+            }
+        </style>
+        <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet"/>
+    </head>
+    <body>
+        <!-- Font Awesome is a great free icon font. -->
+
+
+        <div class="navbar">
+            <div class="button">
+                <i class="fa fa-globe"></i>
+                <span class="button__badge">2</span>
+            </div>
+            <div class="button">
+                <i class="fa fa-comments"></i>
+                <span class="button__badge">4</span>
+            </div>
+        </div>
+    </body>
+</html>

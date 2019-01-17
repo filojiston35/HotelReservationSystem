@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 3.0//EN"
+"http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
+<!-- Generated Dec 26, 2018 6:38:01 PM by Hibernate Tools 4.3.1 -->
+<hibernate-mapping>
+    <class name="com.hotelrezervation.model.MailToken" table="mail_token" catalog="hotelrezervation" optimistic-lock="version">
+        <id name="tokenId" type="java.lang.Integer">
+            <column name="token_id" />
+            <generator class="identity" />
+        </id>
+        <property name="token" type="string">
+            <column name="token" length="45" />
+        </property>
+        <property name="tokenDate" type="timestamp">
+            <column name="token_date" length="19" />
+        </property>
+        <property name="tokenMail" type="string">
+            <column name="token_mail" length="45" />
+        </property>
+    </class>
+</hibernate-mapping>
